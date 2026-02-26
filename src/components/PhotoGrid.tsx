@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Lightbox from './Lightbox';
-import { MoreHorizontal, Play } from 'lucide-react';
+import { Play } from 'lucide-react';
 
 interface ImageKitFile {
   fileId: string;
@@ -19,8 +19,6 @@ export default function PhotoGrid() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
-  const [filter, setFilter] = useState<'all' | 'videos'>('all');
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
@@ -151,32 +149,37 @@ export default function PhotoGrid() {
     // If it's a video, or looks like one, construct a thumbnail URL using ImageKit transformations
     // 'so-0' grabs the frame at 0 seconds
     if (photo.fileType === 'video' || photo.name.match(/\.(mp4|mov|webm|avi|mkv)$/i)) {
-       const separator = photo.url.includes('?') ? '&' : '?';
-       const thumbUrl = `${photo.url}${separator}tr=w-400,h-400,so-0`;
-       // #region agent log
-       fetch('', {
-         method: 'POST',
-         headers: {
-           'Content-Type': 'application/json',
-           'X-Debug-Session-Id': '4f6924',
-         },
-         body: JSON.stringify({
-           sessionId: '4f6924',
-           runId: 'initial',
-           hypothesisId: 'B',
-           location: 'PhotoGrid.tsx:getThumbnailUrl',
-           message: 'Computed video thumbnail URL',
-           data: {
-             fileId: photo.fileId,
-             name: photo.name,
-             originalUrl: photo.url,
-             thumbUrl,
+       // Only apply ImageKit transformations if the URL is hosted on ImageKit
+       if (photo.url.includes('ik.imagekit.io')) {
+         const separator = photo.url.includes('?') ? '&' : '?';
+         const thumbUrl = `${photo.url}${separator}tr=w-400,h-400,so-0`;
+         // #region agent log
+         fetch('', {
+           method: 'POST',
+           headers: {
+             'Content-Type': 'application/json',
+             'X-Debug-Session-Id': '4f6924',
            },
-           timestamp: Date.now(),
-         }),
-       }).catch(() => {});
-       // #endregion
-       return thumbUrl; 
+           body: JSON.stringify({
+             sessionId: '4f6924',
+             runId: 'initial',
+             hypothesisId: 'B',
+             location: 'PhotoGrid.tsx:getThumbnailUrl',
+             message: 'Computed video thumbnail URL',
+             data: {
+               fileId: photo.fileId,
+               name: photo.name,
+               originalUrl: photo.url,
+               thumbUrl,
+             },
+             timestamp: Date.now(),
+           }),
+         }).catch(() => {});
+         // #endregion
+         return thumbUrl;
+       }
+       // For non-ImageKit videos, return the original URL
+       return photo.url;
     }
     
     // For regular images, resize them for the grid to improve performance
@@ -196,45 +199,22 @@ export default function PhotoGrid() {
     );
   };
 
-  const visiblePhotos = filter === 'videos'
-    ? photos.filter((photo) => isVideo(photo))
-    : photos;
+  const visiblePhotos = photos;
+
+  // Count only images (not videos)
+  const imageCount = photos.filter(photo => !isVideo(photo)).length;
 
   return (
     <main className="px-1 sm:px-4 pb-32 max-w-7xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4 mt-4 px-3 sm:px-0">
         <div className="flex items-baseline gap-2">
           <h1 className="text-xl font-medium text-gray-800">Photos</h1>
-          <span className="text-sm text-gray-500">{totalCount > 0 ? totalCount : photos.length} items</span>
+          <span className="text-sm text-gray-500">{imageCount} items</span>
         </div>
         
         <div className="flex items-center gap-3">
         </div>
-        <div className="relative">
-          <button 
-            className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            <MoreHorizontal className="w-4 h-4 text-gray-500" />
-          </button>
-          {isMenuOpen && (
-            <div className="absolute top-full right-0 bg-white shadow-md rounded-md py-2 w-40">
-              <button 
-                className={`block w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors ${filter === 'all' ? 'bg-gray-100' : ''}`}
-                onClick={() => setFilter('all')}
-              >
-                All
-              </button>
-              <button 
-                className={`block w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors ${filter === 'videos' ? 'bg-gray-100' : ''}`}
-                onClick={() => setFilter('videos')}
-              >
-                Videos
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
+              </div>
 
       {loading ? (
         <div className="flex justify-center py-20">
