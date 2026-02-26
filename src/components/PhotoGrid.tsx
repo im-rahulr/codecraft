@@ -14,6 +14,7 @@ interface ImageKitFile {
 
 export default function PhotoGrid() {
   const [photos, setPhotos] = useState<ImageKitFile[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -23,11 +24,14 @@ export default function PhotoGrid() {
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  async function fetchPhotos(skip = 0) {
+  async function fetchPhotos(skip = 0, limit = 20) {
     try {
-      const response = await fetch(`/api/photos?skip=${skip}&limit=20`);
+      const response = await fetch(`/api/photos?skip=${skip}&limit=${limit}`);
       if (response.ok) {
         const data = await response.json();
+        const files = data.files || data;
+        const total = data.totalCount || 0;
+        setTotalCount(total);
         // #region agent log
         fetch('', {
           method: 'POST',
@@ -57,10 +61,10 @@ export default function PhotoGrid() {
           }),
         }).catch(() => {});
         // #endregion
-        if (data.length < 20) {
+        if (files.length < 20) {
           setHasMore(false);
         }
-        setPhotos(prev => skip === 0 ? data : [...prev, ...data]);
+        setPhotos(prev => skip === 0 ? files : [...prev, ...files]);
       }
     } catch (error) {
       console.error("Failed to load photos", error);
@@ -201,23 +205,10 @@ export default function PhotoGrid() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4 mt-4 px-3 sm:px-0">
         <div className="flex items-baseline gap-2">
           <h1 className="text-xl font-medium text-gray-800">Photos</h1>
-          <span className="text-sm text-gray-500">{photos.length} items</span>
+          <span className="text-sm text-gray-500">{totalCount > 0 ? totalCount : photos.length} items</span>
         </div>
         
         <div className="flex items-center gap-3">
-          <label className="flex items-center gap-2 cursor-pointer group select-none">
-            <div className="relative flex items-center">
-              <input type="checkbox" className="peer h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-            </div>
-            <span className="text-sm text-gray-600 group-hover:text-gray-900 border border-gray-300 px-3 py-1 rounded-md peer-checked:bg-blue-50 peer-checked:border-blue-200 peer-checked:text-blue-700 transition-colors">New</span>
-          </label>
-          
-          <label className="flex items-center gap-2 cursor-pointer group select-none">
-            <div className="relative flex items-center">
-              <input type="checkbox" className="peer h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-            </div>
-            <span className="text-sm text-gray-600 group-hover:text-gray-900 border border-gray-300 px-3 py-1 rounded-md peer-checked:bg-blue-50 peer-checked:border-blue-200 peer-checked:text-blue-700 transition-colors">NSFW</span>
-          </label>
         </div>
         <div className="relative">
           <button 

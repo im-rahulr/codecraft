@@ -16,7 +16,7 @@
   - Mark task complete when test is written, run, and failure is documented
   - _Requirements: 1.1, 2.1, 2.3_
 
-- [-] 2. Write preservation property tests (BEFORE implementing fix)
+- [x] 2. Write preservation property tests (BEFORE implementing fix)
   - **Property 2: Preservation** - Image and ImageKit Video Behavior
   - **IMPORTANT**: Follow observation-first methodology
   - Observe behavior on UNFIXED code for non-buggy inputs (images and ImageKit-hosted videos)
@@ -35,7 +35,7 @@
 
 - [ ] 3. Fix for video playback and thumbnail generation
 
-  - [~] 3.1 Implement the fix in PhotoGrid.tsx
+  - [-] 3.1 Implement the fix in PhotoGrid.tsx
     - Modify getThumbnailUrl function to detect ImageKit URLs before applying video transformations
     - Add check: if URL contains 'ik.imagekit.io', apply transformation parameters; otherwise use original URL
     - Update video handling block (lines 169-188) to conditionally apply 'so-0' parameter only for ImageKit-hosted videos

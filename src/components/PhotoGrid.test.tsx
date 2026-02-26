@@ -255,3 +255,361 @@ describe('Bug Condition Exploration: Non-ImageKit Video Thumbnail Generation', (
     });
   });
 });
+
+/**
+ * Preservation Property Tests for Video Playback Fix
+ * 
+ * **Validates: Requirements 3.1, 3.2, 3.3, 3.4**
+ * 
+ * **Property 2: Preservation** - Image and ImageKit Video Behavior
+ * 
+ * IMPORTANT: These tests run on UNFIXED code to observe baseline behavior
+ * 
+ * These tests capture the expected behavior for non-buggy inputs:
+ * - Regular images should have ImageKit transformations applied (tr=w-400)
+ * - ImageKit-hosted videos should have video transformations applied (tr=w-400,h-400,so-0)
+ * - Files with thumbnailUrl field should use that URL
+ * 
+ * When these tests PASS on unfixed code, they confirm the baseline behavior to preserve.
+ * After the fix, these tests should STILL PASS, confirming no regressions.
+ */
+
+describe('Preservation Property Tests: Image and ImageKit Video Behavior', () => {
+  describe('Property 2: Preservation - Regular Image Thumbnail Generation', () => {
+    it('should apply ImageKit transformations to regular ImageKit-hosted images', () => {
+      /**
+       * Observation: Regular images hosted on ImageKit get tr=w-400 transformation
+       * 
+       * This behavior should be preserved after the fix.
+       */
+      const imageFile: ImageKitFile = {
+        fileId: 'test-image-1',
+        name: 'photo.jpg',
+        url: 'https://ik.imagekit.io/demo/photo.jpg',
+        thumbnailUrl: '',
+        height: 1080,
+        width: 1920,
+        fileType: 'image',
+      };
+
+      const result = getThumbnailUrl(imageFile);
+      
+      // Verify ImageKit transformation is applied
+      expect(result).toContain('ik.imagekit.io');
+      expect(result).toContain('tr=w-400');
+      expect(result).not.toContain('so-0'); // Images should NOT have video frame extraction
+    });
+
+    it('should return original URL for non-ImageKit images', () => {
+      /**
+       * Observation: Non-ImageKit images return the original URL
+       * 
+       * This behavior should be preserved after the fix.
+       */
+      const imageFile: ImageKitFile = {
+        fileId: 'test-image-2',
+        name: 'photo.png',
+        url: 'https://cdn.example.com/photo.png',
+        thumbnailUrl: '',
+        height: 1080,
+        width: 1920,
+        fileType: 'image',
+      };
+
+      const result = getThumbnailUrl(imageFile);
+      
+      // Non-ImageKit images should return original URL
+      expect(result).toBe('https://cdn.example.com/photo.png');
+    });
+
+    it('should handle images with various extensions', () => {
+      /**
+       * Observation: Different image formats are handled correctly
+       * 
+       * This behavior should be preserved after the fix.
+       */
+      const extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+      
+      extensions.forEach(ext => {
+        const imageFile: ImageKitFile = {
+          fileId: `test-image-${ext}`,
+          name: `photo.${ext}`,
+          url: `https://ik.imagekit.io/demo/photo.${ext}`,
+          thumbnailUrl: '',
+          height: 1080,
+          width: 1920,
+          fileType: 'image',
+        };
+
+        const result = getThumbnailUrl(imageFile);
+        
+        // All image formats should get the same transformation
+        expect(result).toContain('ik.imagekit.io');
+        expect(result).toContain('tr=w-400');
+        expect(result).not.toContain('so-0');
+      });
+    });
+  });
+
+  describe('Property 2: Preservation - ImageKit Video Thumbnail Generation', () => {
+    it('should apply video transformations to ImageKit-hosted videos', () => {
+      /**
+       * Observation: ImageKit-hosted videos get tr=w-400,h-400,so-0 transformation
+       * 
+       * This behavior should be preserved after the fix.
+       */
+      const videoFile: ImageKitFile = {
+        fileId: 'test-imagekit-video-1',
+        name: 'video.mp4',
+        url: 'https://ik.imagekit.io/demo/video.mp4',
+        thumbnailUrl: '',
+        height: 1080,
+        width: 1920,
+        fileType: 'video',
+      };
+
+      const result = getThumbnailUrl(videoFile);
+      
+      // Verify video transformation is applied
+      expect(result).toContain('ik.imagekit.io');
+      expect(result).toContain('tr=w-400,h-400,so-0');
+    });
+
+    it('should handle ImageKit videos with existing query parameters', () => {
+      /**
+       * Observation: ImageKit videos with query params get & separator for transformations
+       * 
+       * This behavior should be preserved after the fix.
+       */
+      const videoFile: ImageKitFile = {
+        fileId: 'test-imagekit-video-2',
+        name: 'video.mp4',
+        url: 'https://ik.imagekit.io/demo/video.mp4?version=1',
+        thumbnailUrl: '',
+        height: 1080,
+        width: 1920,
+        fileType: 'video',
+      };
+
+      const result = getThumbnailUrl(videoFile);
+      
+      // Verify transformation is appended with & separator
+      expect(result).toContain('ik.imagekit.io');
+      expect(result).toContain('version=1');
+      expect(result).toContain('&tr=w-400,h-400,so-0');
+    });
+
+    it('should handle ImageKit videos with various extensions', () => {
+      /**
+       * Observation: Different video formats on ImageKit are handled correctly
+       * 
+       * This behavior should be preserved after the fix.
+       */
+      const extensions = ['mp4', 'mov', 'webm', 'avi', 'mkv'];
+      
+      extensions.forEach(ext => {
+        const videoFile: ImageKitFile = {
+          fileId: `test-imagekit-video-${ext}`,
+          name: `video.${ext}`,
+          url: `https://ik.imagekit.io/demo/video.${ext}`,
+          thumbnailUrl: '',
+          height: 1080,
+          width: 1920,
+          fileType: 'video',
+        };
+
+        const result = getThumbnailUrl(videoFile);
+        
+        // All video formats should get the same transformation
+        expect(result).toContain('ik.imagekit.io');
+        expect(result).toContain('tr=w-400,h-400,so-0');
+      });
+    });
+  });
+
+  describe('Property 2: Preservation - Provided thumbnailUrl Field', () => {
+    it('should use provided thumbnailUrl for images when available', () => {
+      /**
+       * Observation: When thumbnailUrl is provided, it takes precedence
+       * 
+       * This behavior should be preserved after the fix.
+       */
+      const imageFile: ImageKitFile = {
+        fileId: 'test-thumbnail-1',
+        name: 'photo.jpg',
+        url: 'https://ik.imagekit.io/demo/photo.jpg',
+        thumbnailUrl: 'https://ik.imagekit.io/demo/thumb/photo.jpg',
+        height: 1080,
+        width: 1920,
+        fileType: 'image',
+      };
+
+      const result = getThumbnailUrl(imageFile);
+      
+      // Should use the provided thumbnailUrl
+      expect(result).toBe('https://ik.imagekit.io/demo/thumb/photo.jpg');
+    });
+
+    it('should use provided thumbnailUrl for videos when available', () => {
+      /**
+       * Observation: When thumbnailUrl is provided for videos, it takes precedence
+       * 
+       * This behavior should be preserved after the fix.
+       */
+      const videoFile: ImageKitFile = {
+        fileId: 'test-thumbnail-2',
+        name: 'video.mp4',
+        url: 'https://cdn.example.com/video.mp4',
+        thumbnailUrl: 'https://cdn.example.com/thumbnails/video-thumb.jpg',
+        height: 1080,
+        width: 1920,
+        fileType: 'video',
+      };
+
+      const result = getThumbnailUrl(videoFile);
+      
+      // Should use the provided thumbnailUrl
+      expect(result).toBe('https://cdn.example.com/thumbnails/video-thumb.jpg');
+    });
+  });
+
+  describe('Property-Based Test: Preservation of Image Behavior', () => {
+    it('should preserve image transformation behavior for all ImageKit images', () => {
+      /**
+       * Property-Based Test: Generate random ImageKit image URLs
+       * 
+       * This test generates many random test cases to ensure the property holds
+       * across a wide range of inputs.
+       * 
+       * Expected: All ImageKit images should have tr=w-400 applied
+       */
+      fc.assert(
+        fc.property(
+          // Generate ImageKit image URLs
+          fc.record({
+            path: fc.array(fc.constantFrom('a', 'b', 'c', '1', '2', '3', '/', '-', '_'), { minLength: 5, maxLength: 30 }).map(arr => arr.join('')),
+            extension: fc.constantFrom('jpg', 'jpeg', 'png', 'gif', 'webp'),
+            hasQueryParams: fc.boolean(),
+            queryParam: fc.array(fc.constantFrom('a', 'b', 'c', '1', '2', '3', '='), { minLength: 5, maxLength: 20 }).map(arr => arr.join('')),
+          }),
+          ({ path, extension, hasQueryParams, queryParam }) => {
+            // Construct ImageKit URL
+            const cleanPath = path.replace(/\/+/g, '/').replace(/^\//, '');
+            const url = hasQueryParams
+              ? `https://ik.imagekit.io/demo/${cleanPath}.${extension}?${queryParam}`
+              : `https://ik.imagekit.io/demo/${cleanPath}.${extension}`;
+
+            const imageFile: ImageKitFile = {
+              fileId: 'test-pbt-image',
+              name: `photo.${extension}`,
+              url,
+              thumbnailUrl: '',
+              height: 1080,
+              width: 1920,
+              fileType: 'image',
+            };
+
+            const result = getThumbnailUrl(imageFile);
+
+            // Property: ImageKit images should have tr=w-400 and NOT have so-0
+            return result.includes('ik.imagekit.io') && 
+                   result.includes('tr=w-400') && 
+                   !result.includes('so-0');
+          }
+        ),
+        {
+          numRuns: 50, // Run 50 random test cases
+          verbose: true,
+        }
+      );
+    });
+
+    it('should preserve video transformation behavior for all ImageKit videos', () => {
+      /**
+       * Property-Based Test: Generate random ImageKit video URLs
+       * 
+       * This test generates many random test cases to ensure the property holds
+       * across a wide range of inputs.
+       * 
+       * Expected: All ImageKit videos should have tr=w-400,h-400,so-0 applied
+       */
+      fc.assert(
+        fc.property(
+          // Generate ImageKit video URLs
+          fc.record({
+            path: fc.array(fc.constantFrom('a', 'b', 'c', '1', '2', '3', '/', '-', '_'), { minLength: 5, maxLength: 30 }).map(arr => arr.join('')),
+            extension: fc.constantFrom('mp4', 'mov', 'webm', 'avi', 'mkv'),
+            hasQueryParams: fc.boolean(),
+            queryParam: fc.array(fc.constantFrom('a', 'b', 'c', '1', '2', '3', '='), { minLength: 5, maxLength: 20 }).map(arr => arr.join('')),
+          }),
+          ({ path, extension, hasQueryParams, queryParam }) => {
+            // Construct ImageKit URL
+            const cleanPath = path.replace(/\/+/g, '/').replace(/^\//, '');
+            const url = hasQueryParams
+              ? `https://ik.imagekit.io/demo/${cleanPath}.${extension}?${queryParam}`
+              : `https://ik.imagekit.io/demo/${cleanPath}.${extension}`;
+
+            const videoFile: ImageKitFile = {
+              fileId: 'test-pbt-video',
+              name: `video.${extension}`,
+              url,
+              thumbnailUrl: '',
+              height: 1080,
+              width: 1920,
+              fileType: 'video',
+            };
+
+            const result = getThumbnailUrl(videoFile);
+
+            // Property: ImageKit videos should have tr=w-400,h-400,so-0
+            return result.includes('ik.imagekit.io') && 
+                   result.includes('tr=w-400,h-400,so-0');
+          }
+        ),
+        {
+          numRuns: 50, // Run 50 random test cases
+          verbose: true,
+        }
+      );
+    });
+
+    it('should preserve thumbnailUrl precedence for all file types', () => {
+      /**
+       * Property-Based Test: Generate random files with thumbnailUrl provided
+       * 
+       * Expected: When thumbnailUrl is provided, it should always be used
+       */
+      fc.assert(
+        fc.property(
+          // Generate files with thumbnailUrl
+          fc.record({
+            fileType: fc.constantFrom('image' as const, 'video' as const),
+            extension: fc.constantFrom('jpg', 'png', 'mp4', 'mov'),
+            url: fc.array(fc.constantFrom('a', 'b', 'c', '1', '2', '3', '/', '-', '_', '.'), { minLength: 10, maxLength: 40 }).map(arr => 'https://example.com/' + arr.join('')),
+            thumbnailUrl: fc.array(fc.constantFrom('a', 'b', 'c', '1', '2', '3', '/', '-', '_', '.'), { minLength: 10, maxLength: 40 }).map(arr => 'https://example.com/thumb/' + arr.join('')),
+          }),
+          ({ fileType, extension, url, thumbnailUrl }) => {
+            const file: ImageKitFile = {
+              fileId: 'test-pbt-thumbnail',
+              name: `file.${extension}`,
+              url,
+              thumbnailUrl,
+              height: 1080,
+              width: 1920,
+              fileType,
+            };
+
+            const result = getThumbnailUrl(file);
+
+            // Property: When thumbnailUrl is provided, it should be used
+            return result === thumbnailUrl;
+          }
+        ),
+        {
+          numRuns: 50, // Run 50 random test cases
+          verbose: true,
+        }
+      );
+    });
+  });
+});

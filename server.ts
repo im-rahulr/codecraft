@@ -30,50 +30,17 @@ async function startServer() {
       // or DESC_CREATED for newest uploaded. User requested checking filename.
       const sort = (req.query.sort as string) || "DESC_NAME";
 
-      const result = await imagekit.listFiles({
+      const result: any = await imagekit.listFiles({
         limit: limit,
         skip: skip,
         sort: sort,
       });
 
-      // #region agent log
-      try {
-        const logEntry = {
-          sessionId: "4f6924",
-          runId: "initial",
-          hypothesisId: "API",
-          location: "server.ts:/api/photos",
-          message: "ImageKit listFiles result sample",
-          data: {
-            skip,
-            limit,
-            sort,
-            total: Array.isArray(result) ? result.length : null,
-            sample: Array.isArray(result)
-              ? result.slice(0, 3).map((item) => ({
-                  fileId: item.fileId,
-                  name: item.name,
-                  type: (item as any).fileType ?? (item as any).type ?? null,
-                  mime: (item as any).mime ?? null,
-                  url: item.url,
-                  thumbnail: (item as any).thumbnail ?? null,
-                }))
-              : null,
-          },
-          timestamp: Date.now(),
-        };
-        const logPath = path.join(
-          "c:\\Users\\rahul\\Downloads\\jphotos",
-          "debug-4f6924.log"
-        );
-        fs.appendFileSync(logPath, JSON.stringify(logEntry) + "\n", "utf8");
-        console.log("Debug log written to", logPath);
-      } catch (e) {
-        console.error("Failed to write debug log", e);
-      }
-      // #endregion
-
-      res.json(result);
+      // Return total count along with files
+      res.json({
+        files: result,
+        totalCount: result.totalCount || result.length
+      });
     } catch (error) {
       console.error("Error fetching images from ImageKit:", error);
       res.status(500).json({ error: "Failed to fetch images" });
