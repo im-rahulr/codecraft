@@ -22,6 +22,8 @@ interface LightboxProps {
 }
 
 export default function Lightbox({ photo, onClose, onNext, onPrev, hasNext, hasPrev }: LightboxProps) {
+  const [videoError, setVideoError] = React.useState(false);
+
   // Handle keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -40,6 +42,11 @@ export default function Lightbox({ photo, onClose, onNext, onPrev, hasNext, hasP
       document.body.style.overflow = 'unset';
     };
   }, [photo, onClose, onNext, onPrev]);
+
+  // Reset video error state when photo changes
+  useEffect(() => {
+    setVideoError(false);
+  }, [photo]);
 
   if (!photo) return null;
 
@@ -106,12 +113,28 @@ export default function Lightbox({ photo, onClose, onNext, onPrev, hasNext, hasP
             onClick={(e) => e.stopPropagation()}
           >
             {photo.fileType === 'video' ? (
-              <video
-                src={photo.url}
-                controls
-                autoPlay
-                className="max-w-full max-h-full shadow-2xl outline-none"
-              />
+              videoError ? (
+                <div className="text-white text-center">
+                  <p className="text-lg mb-2">Unable to play video</p>
+                  <p className="text-sm text-white/70">The video format may not be supported by your browser</p>
+                  <a 
+                    href={photo.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-block mt-4 px-4 py-2 bg-white/10 hover:bg-white/20 rounded transition-colors"
+                  >
+                    Open video in new tab
+                  </a>
+                </div>
+              ) : (
+                <video
+                  src={photo.url}
+                  controls
+                  autoPlay
+                  className="max-w-full max-h-full shadow-2xl outline-none"
+                  onError={() => setVideoError(true)}
+                />
+              )
             ) : (
               <img
                 src={photo.url}

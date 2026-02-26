@@ -1,10 +1,18 @@
 import { Handler } from '@netlify/functions';
 import ImageKit from 'imagekit';
 
+const config = {
+  imagekit: {
+    publicKey: "public_dUyiBmk37naGNoM9tPu0Xd4Esw8=",
+    privateKey: "private_tz2jWNpqEhH6vKqzXtoqaJ2nDW4=",
+    urlEndpoint: "https://ik.imagekit.io/lowryfiles"
+  }
+};
+
 const imagekit = new ImageKit({
-  publicKey: process.env.IMAGEKIT_PUBLIC_KEY || '',
-  privateKey: process.env.IMAGEKIT_PRIVATE_KEY || '',
-  urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT || ''
+  publicKey: config.imagekit.publicKey,
+  privateKey: config.imagekit.privateKey,
+  urlEndpoint: config.imagekit.urlEndpoint
 });
 
 export const handler: Handler = async (event) => {

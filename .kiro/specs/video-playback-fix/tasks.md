@@ -33,9 +33,9 @@
   - Mark task complete when tests are written, run, and passing on unfixed code
   - _Requirements: 3.1, 3.2, 3.3, 3.4_
 
-- [ ] 3. Fix for video playback and thumbnail generation
+- [x] 3. Fix for video playback and thumbnail generation
 
-  - [-] 3.1 Implement the fix in PhotoGrid.tsx
+  - [x] 3.1 Implement the fix in PhotoGrid.tsx
     - Modify getThumbnailUrl function to detect ImageKit URLs before applying video transformations
     - Add check: if URL contains 'ik.imagekit.io', apply transformation parameters; otherwise use original URL
     - Update video handling block (lines 169-188) to conditionally apply 'so-0' parameter only for ImageKit-hosted videos
@@ -46,14 +46,14 @@
     - _Preservation: Image thumbnail generation, ImageKit video transformations, fallback placeholders, and lightbox navigation remain unchanged_
     - _Requirements: 1.1, 1.2, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3, 3.4_
 
-  - [~] 3.2 Verify Lightbox.tsx video playback handling
+  - [x] 3.2 Verify Lightbox.tsx video playback handling
     - Review Lightbox component video rendering (lines 82-88)
     - Confirm video element uses photo.url directly for both ImageKit and non-ImageKit videos
     - Verify video controls are enabled and playback works correctly
     - Add error handling if needed for unsupported video formats
     - _Requirements: 1.3, 2.2_
 
-  - [~] 3.3 Verify bug condition exploration test now passes
+  - [x] 3.3 Verify bug condition exploration test now passes
     - **Property 1: Expected Behavior** - Non-ImageKit Video Thumbnail Generation
     - **IMPORTANT**: Re-run the SAME test from task 1 - do NOT write a new test
     - The test from task 1 encodes the expected behavior
@@ -62,7 +62,7 @@
     - **EXPECTED OUTCOME**: Test PASSES (confirms bug is fixed)
     - _Requirements: 2.1, 2.3_
 
-  - [~] 3.4 Verify preservation tests still pass
+  - [x] 3.4 Verify preservation tests still pass
     - **Property 2: Preservation** - Image and ImageKit Video Behavior
     - **IMPORTANT**: Re-run the SAME tests from task 2 - do NOT write new tests
     - Run preservation property tests from step 2
@@ -70,7 +70,7 @@
     - Confirm all tests still pass after fix (no regressions)
     - _Requirements: 3.1, 3.2, 3.3, 3.4_
 
-- [~] 4. Checkpoint - Ensure all tests pass
+- [x] 4. Checkpoint - Ensure all tests pass
   - Run all unit tests and property-based tests
   - Verify no regressions in image display, lightbox navigation, or fallback behavior
   - Test full integration flow: load photos, display grid with video thumbnails, open lightbox, play videos

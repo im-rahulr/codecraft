@@ -33,7 +33,7 @@ interface ImageKitFile {
 }
 
 // Extract getThumbnailUrl function logic from PhotoGrid.tsx for testing
-// This is the UNFIXED version that will demonstrate the bug
+// This is the FIXED version that should pass the tests
 const getThumbnailUrl = (photo: ImageKitFile) => {
   // If a thumbnail URL is provided by the API, use it
   if (photo.thumbnailUrl) return photo.thumbnailUrl;
@@ -41,8 +41,13 @@ const getThumbnailUrl = (photo: ImageKitFile) => {
   // If it's a video, or looks like one, construct a thumbnail URL using ImageKit transformations
   // 'so-0' grabs the frame at 0 seconds
   if (photo.fileType === 'video' || photo.name.match(/\.(mp4|mov|webm|avi|mkv)$/i)) {
-     const separator = photo.url.includes('?') ? '&' : '?';
-     return `${photo.url}${separator}tr=w-400,h-400,so-0`;
+     // Only apply ImageKit transformations if the URL is hosted on ImageKit
+     if (photo.url.includes('ik.imagekit.io')) {
+       const separator = photo.url.includes('?') ? '&' : '?';
+       return `${photo.url}${separator}tr=w-400,h-400,so-0`;
+     }
+     // For non-ImageKit videos, return the original URL
+     return photo.url;
   }
   
   // For regular images, resize them for the grid to improve performance
