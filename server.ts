@@ -3,18 +3,13 @@ import { createServer as createViteServer } from "vite";
 import ImageKit from "imagekit";
 import fs from "fs";
 import path from "path";
+import { config } from "./src/config.js";
 
-// Initialize ImageKit with credentials from environment variables
-// Note: In a real production app, ensure these are set. 
-// For this preview, we are using the keys provided by the user in the prompt if env vars are missing,
-// but strictly following the guideline to use process.env for security where possible.
-// However, since the user explicitly pasted keys to "connect", I will use them if env vars aren't set 
-// to ensure it works immediately for them without manual .env file creation in this specific environment if they haven't set it up.
-// BUT, standard practice is process.env.
+// Initialize ImageKit with credentials from config file
 const imagekit = new ImageKit({
-    publicKey: process.env.IMAGEKIT_PUBLIC_KEY || "public_dUyiBmk37naGNoM9tPu0Xd4Esw8=",
-    privateKey: process.env.IMAGEKIT_PRIVATE_KEY || "private_tz2jWNpqEhH6vKqzXtoqaJ2nDW4=",
-    urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT || "https://ik.imagekit.io/lowryfiles"
+    publicKey: config.imagekit.publicKey,
+    privateKey: config.imagekit.privateKey,
+    urlEndpoint: config.imagekit.urlEndpoint
 });
 
 async function startServer() {

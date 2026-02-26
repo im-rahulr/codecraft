@@ -10,6 +10,9 @@ dist/
 .env.local
 .env.production
 
+# Config with sensitive credentials
+src/config.js
+
 # Logs
 *.log
 debug-*.log
