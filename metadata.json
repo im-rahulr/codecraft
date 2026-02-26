@@ -1,0 +1,5 @@
+{
+  "name": "JPhotos",
+  "description": "A responsive photo gallery application inspired by Google Photos, featuring a masonry grid layout and a floating app dock.",
+  "requestFramePermissions": []
+}
