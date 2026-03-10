@@ -1,6 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Menu, HelpCircle, Grid, MessageSquareWarning, User, Settings, LogOut } from 'lucide-react';
-import { GooglePhotosIcon } from './Icons';
+import React, { useState, useRef, useEffect } from "react";
+import {
+  Menu,
+  HelpCircle,
+  Grid,
+  MessageSquareWarning,
+  User,
+  Settings,
+  LogOut,
+} from "lucide-react";
+import { GooglePhotosIcon } from "./Icons";
 
 interface Account {
   email: string;
@@ -10,24 +18,32 @@ interface Account {
 
 const accounts: Account[] = [
   {
-    email: 'chirag420@gmail.com',
-    name: 'Chirag',
-    avatar: 'https://picsum.photos/seed/chirag/100/100',
+    email: "chirag420@gmail.com",
+    name: "Chirag",
+    avatar: "https://picsum.photos/seed/chirag/100/100",
   },
 ];
 
-export default function Header() {
+interface HeaderProps {
+  currentPath: "/" | "/upload";
+  onNavigate: (path: "/" | "/upload") => void;
+}
+
+export default function Header({ currentPath, onNavigate }: HeaderProps) {
   const [showAccountView, setShowAccountView] = useState(false);
   const accountViewRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (accountViewRef.current && !accountViewRef.current.contains(event.target as Node)) {
+      if (
+        accountViewRef.current &&
+        !accountViewRef.current.contains(event.target as Node)
+      ) {
         setShowAccountView(false);
       }
     }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleAccountClick = () => {
@@ -41,10 +57,16 @@ export default function Header() {
           <button className="p-2 hover:bg-gray-100 rounded-full">
             <Menu className="w-6 h-6 text-gray-600" />
           </button>
-          <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => onNavigate("/")}
+            className="flex items-center gap-2 rounded-lg px-1 py-1 hover:bg-gray-50"
+          >
             <GooglePhotosIcon className="w-8 h-8" />
-            <span className="text-xl font-normal text-gray-600 tracking-tight">JPhotos</span>
-          </div>
+            <span className="text-xl font-normal text-gray-600 tracking-tight">
+              love-re Files
+            </span>
+          </button>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-4">
@@ -54,45 +76,59 @@ export default function Header() {
           <button className="p-2 hover:bg-gray-100 rounded-full hidden sm:block">
             <HelpCircle className="w-6 h-6 text-gray-600" />
           </button>
-          <button className="p-2 hover:bg-gray-100 rounded-full">
-            <Grid className="w-6 h-6 text-gray-600" />
-          </button>
-          <button 
+          {currentPath === "/upload" && (
+            <button
+              type="button"
+              onClick={() => onNavigate("/")}
+              aria-label="Go to photos"
+              className="p-2 rounded-full bg-blue-50 text-blue-600"
+            >
+              <Grid className="w-6 h-6" />
+            </button>
+          )}
+          <button
             onClick={handleAccountClick}
             className="w-8 h-8 rounded-full bg-emerald-600 overflow-hidden border border-gray-200 hover:ring-2 hover:ring-blue-400 transition-all"
           >
-             <img src="https://picsum.photos/seed/chirag/100/100" alt="User" className="w-full h-full object-cover" />
+            <img
+              src="https://picsum.photos/seed/chirag/100/100"
+              alt="User"
+              className="w-full h-full object-cover"
+            />
           </button>
         </div>
       </header>
 
       {/* Google Account View Overlay */}
       {showAccountView && (
-        <div 
+        <div
           className="fixed inset-0 z-50 flex items-start justify-end pt-14 pr-2"
           onClick={() => setShowAccountView(false)}
         >
-          <div 
+          <div
             className="bg-white rounded-lg shadow-lg w-96 overflow-hidden"
             ref={accountViewRef}
             onClick={(e) => e.stopPropagation()}
             style={{
-              boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)'
+              boxShadow:
+                "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
             }}
           >
             {/* Current Account Header */}
             <div className="p-4 border-b border-gray-200">
               <div className="flex items-center gap-3">
                 <div className="w-14 h-14 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
-                  <img 
-                    src="https://picsum.photos/seed/chirag/100/100" 
-                    alt="User" 
-                    className="w-full h-full object-cover" 
+                  <img
+                    src="https://picsum.photos/seed/chirag/100/100"
+                    alt="User"
+                    className="w-full h-full object-cover"
                   />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-medium text-gray-900 text-sm">Chirag</h3>
-                  <p className="text-gray-600 text-sm truncate">chirag420@gmail.com</p>
+                  <p className="text-gray-600 text-sm truncate">
+                    chirag420@gmail.com
+                  </p>
                 </div>
               </div>
             </div>
@@ -100,19 +136,21 @@ export default function Header() {
             {/* Account List */}
             <div className="py-2">
               {accounts.map((account, index) => (
-                <div 
+                <div
                   key={index}
                   className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors"
                 >
                   <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
-                    <img 
-                      src={account.avatar} 
-                      alt={account.name} 
-                      className="w-full h-full object-cover" 
+                    <img
+                      src={account.avatar}
+                      alt={account.name}
+                      className="w-full h-full object-cover"
                     />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-gray-800 text-sm">{account.name}</p>
+                    <p className="font-medium text-gray-800 text-sm">
+                      {account.name}
+                    </p>
                     <p className="text-gray-500 text-xs">{account.email}</p>
                   </div>
                 </div>
@@ -125,11 +163,15 @@ export default function Header() {
             <div className="py-2">
               <div className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors">
                 <User className="w-5 h-5 text-gray-600 flex-shrink-0" />
-                <span className="text-gray-700 text-sm">Add another account</span>
+                <span className="text-gray-700 text-sm">
+                  Add another account
+                </span>
               </div>
               <div className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors">
                 <Settings className="w-5 h-5 text-gray-600 flex-shrink-0" />
-                <span className="text-gray-700 text-sm">Manage your Google Account</span>
+                <span className="text-gray-700 text-sm">
+                  Manage your Google Account
+                </span>
               </div>
             </div>
 
