@@ -1,0 +1,231 @@
+#work-section-root {
+  margin-top: 56px;
+  padding-bottom: 16px;
+}
+
+.work-section {
+  width: min(1120px, calc(100vw - 48px));
+  margin: 0 auto;
+  display: grid;
+  gap: 22px;
+}
+
+.work-section__intro {
+  display: flex;
+  justify-content: center;
+}
+
+.work-section__eyebrow {
+  margin: 0;
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.work-section__grid {
+  display: grid;
+  place-items: center;
+}
+
+.work-card {
+  width: min(100%, 344px);
+  padding: 12px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    180deg,
+    rgba(22, 22, 26, 0.98) 0%,
+    rgba(8, 8, 10, 0.99) 100%
+  );
+  color: #f5f2eb;
+  box-shadow:
+    0 26px 56px rgba(17, 17, 17, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.work-card::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  pointer-events: none;
+}
+
+.work-card__chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 10px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  font-size: 15px;
+  line-height: 1;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.work-card__title {
+  margin: 0;
+  font-family: "Instrument Serif", serif;
+  max-width: none;
+  font-size: clamp(42px, 6vw, 58px);
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+}
+
+.work-card__media {
+  position: relative;
+  min-height: 390px;
+  aspect-ratio: 0.82;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(
+    180deg,
+    #20222a 0%,
+    #181a1f 16%,
+    #dad9d6 16%,
+    #d9d8d5 100%
+  );
+}
+
+.work-card__media--portrait {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.work-card__image {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  max-width: none;
+  filter: none;
+  user-select: none;
+  pointer-events: none;
+}
+
+.work-card__image--primary {
+  transform: none;
+  border-radius: 22px;
+}
+
+.work-card__content {
+  position: relative;
+  z-index: 1;
+  padding: 14px 8px 8px;
+  display: grid;
+  gap: 8px;
+}
+
+.work-card__role-label {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(245, 242, 235, 0.58);
+}
+
+.work-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+@media (hover: hover) {
+  .work-card {
+    transition:
+      transform 0.35s ease,
+      box-shadow 0.35s ease;
+  }
+
+  .work-card:hover,
+  .work-card:focus-within {
+    transform: translateY(-4px);
+    box-shadow: 0 34px 56px rgba(17, 17, 17, 0.2);
+  }
+}
+
+@media (max-width: 860px) {
+  #work-section-root {
+    margin-top: 34px;
+  }
+
+  .work-section {
+    width: min(100%, calc(100vw - 32px));
+    max-width: 560px;
+  }
+
+  .work-card {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 560px) {
+  #work-section-root {
+    margin-top: 28px;
+  }
+
+  .work-section {
+    width: calc(100% - 40px);
+    gap: 18px;
+  }
+
+  .work-section__eyebrow {
+    font-size: 13px;
+  }
+
+  .work-card {
+    width: min(100%, 304px);
+    padding: 10px;
+    border-radius: 24px;
+  }
+
+  .work-card::before {
+    inset: 7px;
+    border-radius: 18px;
+  }
+
+  .work-card__chip {
+    min-height: 34px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 13px;
+  }
+
+  .work-card__title {
+    font-size: 32px;
+  }
+
+  .work-card__role-label {
+    font-size: 11px;
+  }
+
+  .work-card__media {
+    min-height: 272px;
+    border-radius: 18px;
+  }
+
+  .work-card__image--primary {
+    border-radius: 18px;
+  }
+
+  .work-card__content {
+    padding: 12px 4px 4px;
+    gap: 7px;
+  }
+}
