@@ -4,7 +4,7 @@
   "description": "",
   "main": "script.js",
   "scripts": {
-    "build": "vite build && copyfiles *.html dist",
+    "build": "vite build && copyfiles \"*.html\" \"sections/*.css\" \"sections/*.js\" \"styles.css\" \"script.js\" dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
