@@ -1,7 +1,3 @@
-if (typeof window.renderWorkSection === "function") {
-  window.renderWorkSection("work-section-root");
-}
-
 if (typeof window.renderAboutSection === "function") {
   window.renderAboutSection("about-section-root");
 }

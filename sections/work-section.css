@@ -27,11 +27,16 @@
 
 .work-section__grid {
   display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
   place-items: center;
+  max-width: 1120px;
+  margin: 0 auto;
 }
 
 .work-card {
-  width: min(100%, 344px);
+  width: 100%;
+  max-width: 344px;
   padding: 12px;
   border-radius: 30px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -170,6 +175,11 @@
     max-width: 560px;
   }
 
+  .work-section__grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
   .work-card {
     max-width: 100%;
   }
@@ -185,12 +195,18 @@
     gap: 18px;
   }
 
+  .work-section__grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
   .work-section__eyebrow {
     font-size: 13px;
   }
 
   .work-card {
-    width: min(100%, 304px);
+    width: 100%;
+    max-width: 304px;
     padding: 10px;
     border-radius: 24px;
   }

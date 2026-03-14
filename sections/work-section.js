@@ -2,11 +2,11 @@
   const workMarkup = `
     <section class="work-section" aria-labelledby="work-section-title">
       <div class="work-section__intro">
-        <p class="work-section__eyebrow">Team showcase</p>
+        <!-- <p class="work-section__eyebrow">Team showcase</p> -->
       </div>
 
       <div class="work-section__grid">
-        <article class="work-card work-card--member">
+        <!-- <article class="work-card work-card--member">
           <div class="work-card__media work-card__media--portrait">
             <img
               class="work-card__image work-card__image--primary"
@@ -22,7 +22,7 @@
               <span class="work-card__chip">Developer</span>
             </div>
           </div>
-        </article>
+        </article> -->
 
         <article class="work-card work-card--member">
           <div class="work-card__media work-card__media--portrait">

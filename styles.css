@@ -178,6 +178,66 @@ body {
   }
 }
 
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes shootingStar {
+  0% {
+    transform: translateX(0) translateY(0) rotate(-45deg);
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(300px) translateY(300px) rotate(-45deg);
+    opacity: 0;
+  }
+}
+
+@keyframes planetRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes asteroidFloat {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(30px, -15px) rotate(90deg);
+  }
+  50% {
+    transform: translate(-20px, -30px) rotate(180deg);
+  }
+  75% {
+    transform: translate(-30px, 15px) rotate(270deg);
+  }
+}
+
+@keyframes nebulaPulse {
+  0%, 100% {
+    opacity: 0.4;
+    filter: blur(20px) brightness(0.8);
+  }
+  50% {
+    opacity: 0.7;
+    filter: blur(25px) brightness(1.2);
+  }
+}
+
 .page-shell {
   --ambient-shift-x: 0;
   --ambient-shift-y: 0;
@@ -308,6 +368,189 @@ body {
   animation-direction: reverse;
 }
 
+/* Space Objects */
+.ambient-planet,
+.ambient-moon,
+.ambient-asteroid,
+.ambient-nebula,
+.ambient-shooting-star,
+.ambient-star-cluster {
+  position: absolute;
+  display: block;
+}
+
+.ambient-planet {
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ff6b6b, #c92a2a);
+  box-shadow: 
+    0 0 20px rgba(255, 107, 107, 0.3),
+    inset -5px -5px 10px rgba(0, 0, 0, 0.3);
+  animation: planetRotate 20s linear infinite;
+}
+
+.ambient-planet--mars {
+  top: 15%;
+  right: 10%;
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(circle at 30% 30%, #ff8a42, #c92a2a);
+  animation-duration: 25s;
+}
+
+.ambient-planet--blue {
+  top: 60%;
+  left: 5%;
+  width: 40px;
+  height: 40px;
+  background: radial-gradient(circle at 30% 30%, #4ecdc4, #1a7a75);
+  animation-duration: 30s;
+  animation-direction: reverse;
+}
+
+.ambient-moon {
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #f8f9fa, #868e96);
+  box-shadow: 
+    0 0 10px rgba(248, 249, 250, 0.2),
+    inset -2px -2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.ambient-moon--earth {
+  top: 18%;
+  right: 18%;
+  width: 20px;
+  height: 20px;
+  animation: asteroidFloat 15s ease-in-out infinite;
+}
+
+.ambient-asteroid {
+  border-radius: 40%;
+  background: linear-gradient(45deg, #6c757d, #495057);
+  box-shadow: 0 0 8px rgba(108, 117, 125, 0.3);
+  animation: asteroidFloat 12s ease-in-out infinite;
+}
+
+.ambient-asteroid--one {
+  top: 25%;
+  left: 8%;
+  width: 15px;
+  height: 12px;
+  animation-duration: 10s;
+}
+
+.ambient-asteroid--two {
+  top: 70%;
+  right: 15%;
+  width: 18px;
+  height: 14px;
+  animation-duration: 14s;
+  animation-delay: -3s;
+}
+
+.ambient-nebula {
+  border-radius: 50%;
+  filter: blur(20px);
+  opacity: 0.6;
+  animation: nebulaPulse 8s ease-in-out infinite;
+}
+
+.ambient-nebula--purple {
+  top: 10%;
+  left: 15%;
+  width: 200px;
+  height: 150px;
+  background: radial-gradient(ellipse, rgba(138, 43, 226, 0.3), transparent);
+  animation-duration: 10s;
+}
+
+.ambient-nebula--blue {
+  bottom: 15%;
+  right: 10%;
+  width: 180px;
+  height: 130px;
+  background: radial-gradient(ellipse, rgba(30, 144, 255, 0.3), transparent);
+  animation-duration: 12s;
+  animation-delay: -4s;
+}
+
+.ambient-shooting-star {
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8);
+  animation: shootingStar 3s linear infinite;
+}
+
+.ambient-shooting-star--one {
+  top: 20%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.ambient-shooting-star--two {
+  top: 40%;
+  left: 30%;
+  animation-delay: 1.5s;
+}
+
+.ambient-shooting-star--three {
+  top: 60%;
+  left: 5%;
+  animation-delay: 2.5s;
+}
+
+.ambient-star-cluster {
+  width: 80px;
+  height: 80px;
+  opacity: 0.7;
+}
+
+.ambient-star-cluster::before,
+.ambient-star-cluster::after {
+  content: "";
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+.ambient-star-cluster--top-right {
+  top: 8%;
+  right: 8%;
+}
+
+.ambient-star-cluster--top-right::before {
+  top: 20px;
+  left: 30px;
+  animation-delay: 0s;
+}
+
+.ambient-star-cluster--top-right::after {
+  top: 40px;
+  left: 50px;
+  animation-delay: 0.7s;
+}
+
+.ambient-star-cluster--bottom-left {
+  bottom: 12%;
+  left: 10%;
+}
+
+.ambient-star-cluster--bottom-left::before {
+  top: 15px;
+  left: 20px;
+  animation-delay: 1.2s;
+}
+
+.ambient-star-cluster--bottom-left::after {
+  top: 35px;
+  left: 45px;
+  animation-delay: 0.3s;
+}
+
 .top-nav {
   width: fit-content;
   margin: 0 auto;
@@ -427,10 +670,10 @@ body {
 
 .hero-content {
   width: min(720px, calc(100vw - 64px));
-  text-align: center;
+  text-align: left;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 16px;
   margin-top: -36px;
   position: relative;
@@ -596,7 +839,7 @@ h1 {
 .social-proof {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   margin-top: 6px;
 }
@@ -1045,6 +1288,12 @@ h1 {
   .ambient-orb,
   .ambient-grid,
   .ambient-star,
+  .ambient-planet,
+  .ambient-moon,
+  .ambient-asteroid,
+  .ambient-nebula,
+  .ambient-shooting-star,
+  .ambient-star-cluster,
   .hero-orbit__ring,
   .hero-orbit__trail,
   .hero-orbit__core,
@@ -1137,6 +1386,8 @@ h1 {
   .hero-content {
     margin-top: -10px;
     width: min(100%, 620px);
+    text-align: center;
+    align-items: center;
   }
 
   .hero-orbit {
@@ -1311,6 +1562,8 @@ h1 {
     width: min(100%, 330px);
     gap: 14px;
     margin-top: 0;
+    text-align: center;
+    align-items: center;
   }
 
   .hero-orbit {
@@ -1384,6 +1637,7 @@ h1 {
   .social-proof {
     gap: 8px;
     margin-top: 2px;
+    align-items: center;
   }
 
   .social-proof p {
