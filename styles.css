@@ -1318,6 +1318,12 @@ h1 {
   .ambient-orb,
   .ambient-grid,
   .ambient-star,
+  .ambient-planet,
+  .ambient-moon,
+  .ambient-asteroid,
+  .ambient-nebula,
+  .ambient-shooting-star,
+  .ambient-star-cluster,
   .hero-orbit,
   .hero-orbit__ring,
   .hero-orbit__trail,
@@ -1345,6 +1351,15 @@ h1 {
 
   .ambient-scene,
   .hero-orbit {
+    transform: none !important;
+  }
+
+  .ambient-planet,
+  .ambient-moon,
+  .ambient-asteroid,
+  .ambient-nebula,
+  .ambient-shooting-star,
+  .ambient-star-cluster {
     transform: none !important;
   }
 }
